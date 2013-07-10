@@ -160,13 +160,17 @@ module Orientdb4r
       options_pattern = {
         :database => :mandatory, :storage => 'memory',
         :user => :optional, :password => :optional,
-        :type => 'graph'
+        :type => :optional
       }
       verify_and_sanitize_options(options, options_pattern)
 
       params = { :method => :post, :uri => "database/#{options[:database]}/#{options[:storage]}" }
       params[:no_session] = true # out of existing session which represents an already done authentication
-      params[:type] = options[:type]
+      if options.include? :type
+        params[:type] = options[:type]
+      else
+        params[:type] = 'graph'
+      end
 
       # additional authentication allowed, overriden in 'call_server' if not defined
       params[:user] = options[:user] if options.include? :user
