@@ -158,13 +158,15 @@ module Orientdb4r
 
     def create_database(options) #:nodoc:
       options_pattern = {
-        :database => :mandatory, :type => 'memory',
-        :user => :optional, :password => :optional
+        :database => :mandatory, :storage => 'memory',
+        :user => :optional, :password => :optional,
+        :type => 'graph'
       }
       verify_and_sanitize_options(options, options_pattern)
 
-      params = { :method => :post, :uri => "database/#{options[:database]}/#{options[:type]}" }
+      params = { :method => :post, :uri => "database/#{options[:database]}/#{options[:storage]}" }
       params[:no_session] = true # out of existing session which represents an already done authentication
+      params[:type] = options[:type]
 
       # additional authentication allowed, overriden in 'call_server' if not defined
       params[:user] = options[:user] if options.include? :user
